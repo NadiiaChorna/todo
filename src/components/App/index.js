@@ -13,17 +13,58 @@ export default class App extends Component {
 
   state = {
     todoData: [
-      { label: 'Drink Coffee', important: false, id: shortid.generate() },
-      { label: 'Make Awesome App', important: false, id: shortid.generate() },
+      this.createTodoItem('Drink Coffee'),
+      this.createTodoItem('Make Awesome App'),
+      this.createTodoItem('Do exercises'),
+      this.createTodoItem('Learn smth'),
+      this.createTodoItem('Work'),
     ],
+    searchCriteria: '',
+    filter: 'all'
   }
 
-  creareTodoItem = (label) => ({
-    label,
-    important: false,
-    done: false,
-    id: shortid.generate()
+  filterTaskList = (todoData) => {
+    switch(this.state.filter) {
+      case 'all':
+        return todoData;
+      case 'active':
+        return todoData.filter(el => !el.done)
+      case 'done':
+        return todoData.filter(el => el.done)
+      default:
+        return todoData;
+    }
+  }
+
+  onFilterChange = (filter) => this.setState({ filter });
+
+  createTodoItem(label) {
+    return {
+      label,
+      important: false,
+      done: false,
+      id: shortid.generate()
+    }
+  };
+
+  toggleProperty = (todoData, id, property) => ({
+    todoData: todoData.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          [property]: !task[property]
+        }
+      }
+
+      return task;
+    })
   });
+
+  onSearchHandler = (e) => {
+    this.setState(({ todoData }) => ({
+      searchCriteria: e.target.value,
+    }));
+  }
 
   onTaskDelete = (currentId) => {
     this.setState(({ todoData }) => ({
@@ -32,7 +73,7 @@ export default class App extends Component {
   };
 
   addItemHandler = (newTask) => {
-    const taskObject = this.creareTodoItem(newTask);
+    const taskObject = this.createTodoItem(newTask);
 
     this.setState(({ todoData }) => ({
       todoData: [...todoData, taskObject],
@@ -40,47 +81,29 @@ export default class App extends Component {
   }
 
   onToggleImportant = (currentId) => {
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((task) => {
-        if(task.id === currentId) {
-          return {
-            ...task,
-            important: !task.important
-          }
-        }
-
-        return task;
-      })
-    }))
-  }
+    this.setState(({ todoData }) => this.toggleProperty(todoData, currentId, 'important'))
+  };
 
   onToggleDone = (currentId) => {
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((task) => {
-        if(task.id === currentId) {
-          return {
-            ...task,
-            done: !task.done
-          }
-        }
-
-        return task;
-      })
-    }))
-  }
+    this.setState(({ todoData }) => this.toggleProperty(todoData, currentId, 'done'))
+  };
 
   render() {
-    const doneCount = this.state.todoData.filter(el => el.done).length;
-    const todoCount = this.state.todoData.filter(el => !el.done).length;
+    const { todoData, searchCriteria, filter } = this.state;
+    const doneCount = todoData.filter(el => el.done).length;
+    const todoCount = todoData.filter(el => !el.done).length;
+    const searchResults = todoData.filter(({ label }) => label.toLowerCase().includes(searchCriteria.toLowerCase()));
+    const dataToRender = this.filterTaskList(searchResults);
+
     return (
       <div className="todo-app">
         <AppHeader doneCount={doneCount} todoCount={todoCount} />
         <div className="top-panel d-flex">
-          <SearchPanel />
-          <ItemStatusFilter />
+          <SearchPanel value={searchCriteria} onSearchHandler={this.onSearchHandler} />
+          <ItemStatusFilter onFilterChange={this.onFilterChange} filter={filter} />
         </div>
         <TodoList
-          todoData={this.state.todoData}
+          todoData={dataToRender}
           onTaskDelete={this.onTaskDelete}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone}

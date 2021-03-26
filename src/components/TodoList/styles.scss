@@ -1,5 +1,9 @@
 .todo-list {
   .list-group-item {
     padding: 6px 12px;
+
+    &.hidden {
+      display: none;
+    }
   }
 }

@@ -7,10 +7,10 @@ const TodoList = ({ todoData, onTaskDelete, onToggleDone, onToggleImportant }) =
   <ul className="list-group todo-list">
     {
       todoData.map((todoTask) => {
-        const { id, ...taskDetails } = todoTask;
+        const { id, isVisible, ...taskDetails } = todoTask;
 
         return (
-          <li key={id} className="list-group-item">
+          <li key={id} className='list-group-item'>
             <TodoListItem
               {...taskDetails}
               onTaskDelete={() => onTaskDelete(id)}

@@ -2,12 +2,14 @@ import React from 'react';
 
 import './styles.scss';
 
-const SearchPanel = () => (
+const SearchPanel = ({ value, onSearchHandler }) => (
   <input
     type="text"
-    className="form-control mb-3 search-input"
-    placeholder="type to search"
+    onChange={onSearchHandler}
+    className="form-control mb-3 mr-2 search-input"
+    placeholder="Type to search"
+    value={value}
   />
-);;
+);
 
 export default SearchPanel;
