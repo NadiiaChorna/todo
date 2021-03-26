@@ -4,22 +4,19 @@ import './styles.scss';
 
 const ItemStatusFilter = ({ filter, onFilterChange }) => {
   const buttons = [
-    { name: 'all', label: 'All'},
-    { name: 'active', label: 'Active'},
-    { name: 'done', label: 'Done'}
+    { name: 'all', label: 'All' },
+    { name: 'active', label: 'Active' },
+    { name: 'done', label: 'Done' }
   ]
 
   return (
     <div className="btn-group mb-3">
-    {
-      buttons.map(({ name, label }) => {
-        const btnClass = (name === filter) ? 'btn-info' : 'btn-outline-secondary';
-        return <button type="button" onClick={() => onFilterChange(name)} className={`btn ${btnClass}`}>{label}</button>
-      })
-    }
-      
-      {/* <button type="button"  className="btn btn-outline-secondary">Active</button>
-      <button type="button" className="btn btn-outline-secondary">Done</button> */}
+      {
+        buttons.map(({ name, label }) => {
+          const btnClass = (name === filter) ? 'btn-info' : 'btn-outline-secondary';
+          return <button type="button" onClick={() => onFilterChange(name)} className={`btn ${btnClass}`}>{label}</button>
+        })
+      }
     </div>
   );
 };
